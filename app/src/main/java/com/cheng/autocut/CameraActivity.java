@@ -10,11 +10,11 @@ import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.cheng.autocut.utils.AreaUtil;
 import com.cheng.autocut.view.AreaView;
 import com.cheng.openvclib.AutoCut;
 
@@ -104,33 +104,36 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                mCamera.setOneShotPreviewCallback(new Camera.PreviewCallback() {
-                    @Override
-                    public void onPreviewFrame(byte[] data, Camera camera) {
-                        Camera.Size size = camera.getParameters().getPreviewSize(); //获取预览大小
-                        final int w = size.width;
-                        final int h = size.height;
-                        final YuvImage image = new YuvImage(data, ImageFormat.NV21, w, h, null);
-                        ByteArrayOutputStream os = new ByteArrayOutputStream(data.length);
-                        if (!image.compressToJpeg(new Rect(0, 0, w, h), 100, os)) {
-                            return;
-                        }
-                        byte[] tmp = os.toByteArray();
-                        Bitmap bmp = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
-                        Matrix matrix = new Matrix();
-                        matrix.setRotate(90);
-                        final Bitmap bitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
-                        final Point[] points = AutoCut.scan(bitmap);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                areaView.updateArea(points, bitmap);
-                            }
-                        });
-                    }
-                });
+                mCamera.autoFocus(autoFocusCallback);
+//                mCamera.setOneShotPreviewCallback(new Camera.PreviewCallback() {
+//                    @Override
+//                    public void onPreviewFrame(byte[] data, Camera camera) {
+//                        Camera.Size size = camera.getParameters().getPreviewSize(); //获取预览大小
+//                        final int w = size.width;
+//                        final int h = size.height;
+//                        final YuvImage image = new YuvImage(data, ImageFormat.NV21, w, h, null);
+//                        ByteArrayOutputStream os = new ByteArrayOutputStream(data.length);
+//                        if (!image.compressToJpeg(new Rect(0, 0, w, h), 100, os)) {
+//                            return;
+//                        }
+//                        byte[] tmp = os.toByteArray();
+//                        Bitmap bmp = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
+//                        Matrix matrix = new Matrix();
+//                        matrix.setRotate(90);
+//                        final Bitmap bitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
+//                        final Point[] points = AutoCut.scan(bitmap);
+//                        if (AreaUtil.filterPoint(points, CameraActivity.this)) {
+//                            runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    areaView.updateArea(points, bitmap);
+//                                }
+//                            });
+//                        }
+//                    }
+//                });
             }
-        }, 1000, 1000);
+        }, 1000, 3000);
     }
 
     @Override
@@ -162,12 +165,14 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                         matrix.setRotate(90);
                         final Bitmap bitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
                         final Point[] points = AutoCut.scan(bitmap);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                areaView.updateArea(points, bitmap);
-                            }
-                        });
+                        if (AreaUtil.filterPoint(points, CameraActivity.this)) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    areaView.updateArea(points, bitmap);
+                                }
+                            });
+                        }
                     }
                 });
             }
