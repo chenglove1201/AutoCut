@@ -24,7 +24,7 @@ public class AreaUtil {
             int widthPixels = dm.widthPixels;
             int heightPixels = dm.heightPixels;
             minEffectiveSquare = widthPixels * heightPixels / ratio;
-            return calcSquare(points) & isAcross(points);
+            return calcSquare(points);
         }
         return false;
     }

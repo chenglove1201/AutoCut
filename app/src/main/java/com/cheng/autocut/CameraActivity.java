@@ -14,7 +14,6 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
-import com.cheng.autocut.utils.AreaUtil;
 import com.cheng.autocut.view.AreaView;
 import com.cheng.openvclib.AutoCut;
 
@@ -29,7 +28,7 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
     private SurfaceHolder mSurfaceHolder;
     private Camera mCamera;
     private AreaView areaView;
-    private int viewWidth, viewHeight;
+    //    private int viewWidth, viewHeight;
     private Camera.Parameters parameters;
 
     @Override
@@ -68,14 +67,14 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         mSurfaceView.setOnClickListener(this);
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (mSurfaceView != null) {
-            viewWidth = mSurfaceView.getWidth();
-            viewHeight = mSurfaceView.getHeight();
-        }
-    }
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        super.onWindowFocusChanged(hasFocus);
+//        if (mSurfaceView != null) {
+//            viewWidth = mSurfaceView.getWidth();
+//            viewHeight = mSurfaceView.getHeight();
+//        }
+//    }
 
     private void initCamera() {
         mCamera = Camera.open();
@@ -83,11 +82,17 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
         if (mCamera != null) {
             try {
                 parameters = mCamera.getParameters();
-//                //设置预览照片的大小
-//                parameters.setPreviewFpsRange(viewWidth, viewHeight);
-//                //设置照片的大小
-//                parameters.setPictureSize(viewWidth, viewHeight);
-//                mCamera.setParameters(parameters);
+                //设置图片的质量
+                parameters.setJpegQuality(100);
+                int[] i = new int[2];
+                parameters.getPreviewFpsRange(i);
+                //设置相机预览照片帧数
+                parameters.setPreviewFpsRange(i[0] / 1000, i[1] / 1000);
+                //设置照片大小
+                parameters.setPictureSize(mSurfaceView.getWidth(), mSurfaceView.getHeight());
+                //设置预览大小
+                parameters.setPreviewSize(mSurfaceView.getHeight(), mSurfaceView.getWidth());
+                mCamera.setParameters(parameters);
                 mCamera.setPreviewDisplay(mSurfaceHolder);
                 mCamera.startPreview();
                 startScan();
@@ -105,33 +110,6 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void run() {
                 mCamera.autoFocus(autoFocusCallback);
-//                mCamera.setOneShotPreviewCallback(new Camera.PreviewCallback() {
-//                    @Override
-//                    public void onPreviewFrame(byte[] data, Camera camera) {
-//                        Camera.Size size = camera.getParameters().getPreviewSize(); //获取预览大小
-//                        final int w = size.width;
-//                        final int h = size.height;
-//                        final YuvImage image = new YuvImage(data, ImageFormat.NV21, w, h, null);
-//                        ByteArrayOutputStream os = new ByteArrayOutputStream(data.length);
-//                        if (!image.compressToJpeg(new Rect(0, 0, w, h), 100, os)) {
-//                            return;
-//                        }
-//                        byte[] tmp = os.toByteArray();
-//                        Bitmap bmp = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
-//                        Matrix matrix = new Matrix();
-//                        matrix.setRotate(90);
-//                        final Bitmap bitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
-//                        final Point[] points = AutoCut.scan(bitmap);
-//                        if (AreaUtil.filterPoint(points, CameraActivity.this)) {
-//                            runOnUiThread(new Runnable() {
-//                                @Override
-//                                public void run() {
-//                                    areaView.updateArea(points, bitmap);
-//                                }
-//                            });
-//                        }
-//                    }
-//                });
             }
         }, 1000, 3000);
     }
@@ -160,19 +138,19 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                             return;
                         }
                         byte[] tmp = os.toByteArray();
-                        Bitmap bmp = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
+                        Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, tmp.length);
                         Matrix matrix = new Matrix();
                         matrix.setRotate(90);
                         final Bitmap bitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
                         final Point[] points = AutoCut.scan(bitmap);
-                        if (AreaUtil.filterPoint(points, CameraActivity.this)) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    areaView.updateArea(points, bitmap);
-                                }
-                            });
-                        }
+//                        if (AreaUtil.filterPoint(points, CameraActivity.this)) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                areaView.updateArea(points, bitmap);
+                            }
+                        });
+//                        }
                     }
                 });
             }
