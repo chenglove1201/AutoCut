@@ -53,8 +53,8 @@ public class AreaUtil {
         int absX4 = Math.abs(points[1].x - points[3].x);
         int absY4 = Math.abs(points[1].y - points[3].y);
         length4 = (int) Math.sqrt(absX4 * absX4 + absY4 * absY4);
-        int perimeterHalf1 = length0 + length3 + length4;
-        int perimeterHalf2 = length1 + length2 + length4;
+        int perimeterHalf1 = (length0 + length3 + length4) / 2;
+        int perimeterHalf2 = (length1 + length2 + length4) / 2;
         int square1 = (int) Math.sqrt(perimeterHalf1 * (perimeterHalf1 - length0) * (perimeterHalf1 - length3) * (perimeterHalf1 - length4));
         int square2 = (int) Math.sqrt(perimeterHalf2 * (perimeterHalf2 - length1) * (perimeterHalf2 - length2) * (perimeterHalf2 - length4));
         square = square1 + square2;

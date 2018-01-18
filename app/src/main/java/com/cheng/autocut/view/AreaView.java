@@ -9,6 +9,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -21,7 +22,7 @@ public class AreaView extends View {
     private Path path;
     private int width = 400;
     private int height = 200;
-    private Bitmap bitmap;
+//    private Bitmap bitmap;
 
     public AreaView(Context context) {
         this(context, null);
@@ -39,7 +40,6 @@ public class AreaView extends View {
     private void init() {
         path = new Path();
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.WHITE);
         paint.setAlpha(150);
     }
 
@@ -58,26 +58,33 @@ public class AreaView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (points != null && points.length == 4) {
-            path.moveTo(point2ViewX(points[0]), point2ViewY(points[0]));
-            path.lineTo(point2ViewX(points[1]), point2ViewY(points[1]));
-            path.lineTo(point2ViewX(points[2]), point2ViewY(points[2]));
-            path.lineTo(point2ViewX(points[3]), point2ViewY(points[3]));
+            path.moveTo(points[0].x, points[0].y);
+            path.lineTo(points[1].x, points[1].y);
+            path.lineTo(points[2].x, points[2].y);
+            path.lineTo(points[3].x, points[3].y);
+            paint.setColor(Color.WHITE);
             canvas.drawPath(path, paint);
+            paint.setColor(Color.RED);
+            paint.setTextSize(20f);
+            canvas.drawText("1", points[0].x, points[0].y, paint);
+            canvas.drawText("2", points[1].x, points[1].y, paint);
+            canvas.drawText("3", points[2].x, points[2].y, paint);
+            canvas.drawText("4", points[3].x, points[3].y, paint);
         }
     }
 
-    public void updateArea(Point[] points, Bitmap bitmap) {
-        this.bitmap = bitmap;
+    public void updateArea(Point[] points) {
+//        this.bitmap = bitmap;
         this.points = points;
         path.reset();
-        invalidate();
+        postInvalidate();
     }
 
-    private float point2ViewX(Point point) {
-        return (float) point.x / bitmap.getWidth() * width;
-    }
-
-    private float point2ViewY(Point point) {
-        return (float) point.y / bitmap.getHeight() * height;
-    }
+//    private float point2ViewX(Point point) {
+//        return (float) point.x / bitmap.getWidth() * width;
+//    }
+//
+//    private float point2ViewY(Point point) {
+//        return (float) point.y / bitmap.getHeight() * height;
+//    }
 }
