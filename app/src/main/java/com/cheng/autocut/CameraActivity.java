@@ -137,25 +137,25 @@ public class CameraActivity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onPreviewFrame(byte[] data, Camera camera) {
                         Log.i("Jfoiwejijgioweg", "==================");
-//                        long j = System.currentTimeMillis();
-//                        Camera.Size size = camera.getParameters().getPreviewSize(); //获取预览大小
-//                        final int w = size.width;  //宽度
-//                        final int h = size.height;
-//                        final YuvImage image = new YuvImage(data, ImageFormat.NV21, w, h, null);
-//                        ByteArrayOutputStream os = new ByteArrayOutputStream(data.length);
-//                        if (!image.compressToJpeg(new Rect(0, 0, w, h), 100, os)) {
-//                            return;
-//                        }
-//                        byte[] tmp = os.toByteArray();
-//                        Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-//                        Matrix matrix = new Matrix();
-//                        matrix.setRotate(90);
-//                        Bitmap bitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
-////                        Log.i("Jfoiwejijgioweg", (System.currentTimeMillis() - j) + "");
-//                        long l = System.currentTimeMillis();
-//                        Point[] points = AutoCut.scan(bitmap);
-//                        Log.i("Jfoiwejijgioweg", (System.currentTimeMillis() - l) + "");
-//                        areaView.updateArea(points);
+                        long j = System.currentTimeMillis();
+                        Camera.Size size = camera.getParameters().getPreviewSize(); //获取预览大小
+                        final int w = size.width;  //宽度
+                        final int h = size.height;
+                        final YuvImage image = new YuvImage(data, ImageFormat.NV21, w, h, null);
+                        ByteArrayOutputStream os = new ByteArrayOutputStream(data.length);
+                        if (!image.compressToJpeg(new Rect(0, 0, w, h), 100, os)) {
+                            return;
+                        }
+                        byte[] tmp = os.toByteArray();
+                        Bitmap bmp = BitmapFactory.decodeByteArray(tmp, 0, tmp.length);
+                        Matrix matrix = new Matrix();
+                        matrix.setRotate(90);
+                        Bitmap bitmap = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
+//                        Log.i("Jfoiwejijgioweg", (System.currentTimeMillis() - j) + "");
+                        long l = System.currentTimeMillis();
+                        Point[] points = AutoCut.scan(bitmap);
+                        Log.i("Jfoiwejijgioweg", (System.currentTimeMillis() - l) + "");
+//                        areaView.updateArea(points, bitmap);
                     }
                 });
             }

@@ -6,6 +6,11 @@
     <TextureView
         android:id="@+id/textureView1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
+    <com.cheng.autocut.view.AreaView
+        android:id="@+id/area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
 </RelativeLayout>

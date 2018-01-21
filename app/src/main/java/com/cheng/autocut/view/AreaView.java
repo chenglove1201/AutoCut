@@ -9,8 +9,9 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
+
+import com.cheng.autocut.entity.ViewPoint;
 
 /**
  * Created by ICAN on 2018/1/3.
@@ -18,7 +19,7 @@ import android.view.View;
 
 public class AreaView extends View {
     private Paint paint;
-    private Point[] points;
+    private ViewPoint[] points;
     private Path path;
     private int width = 400;
     private int height = 200;
@@ -73,7 +74,7 @@ public class AreaView extends View {
         }
     }
 
-    public void updateArea(Point[] points) {
+    public void updateArea(ViewPoint[] points) {
 //        this.bitmap = bitmap;
         this.points = points;
         path.reset();
